@@ -95,7 +95,7 @@ variable "timezone" {
      default = ""
 }
 
-variable "provision_vm_agent" {
+variable "provision_vm_agent" { 
      type = bool
      description = "(optional) describe your variable"
      default = true
