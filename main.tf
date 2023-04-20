@@ -26,7 +26,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     computer_name  = var.name
     admin_username = var.admin_username
     admin_password = var.admin_password
-    custom_data    = var.custom_data
+    # custom_data    = var.custom_data
   }
 
   dynamic "os_profile_linux_config" {
