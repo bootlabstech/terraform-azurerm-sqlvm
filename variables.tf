@@ -6,10 +6,7 @@ variable "publisher" {
      type = string
      description = " Specifies the publisher of the image used to create the virtual machine. Examples: Canonical, MicrosoftWindowsServer"
 }
-variable "network_interface_name" {
-     type = string
-     description = "The name of the Network Interface. Changing this forces a new resource to be created."
-}
+
 variable "admin_username" {
      type = string
      description = "Specifies the name of the local administrator account."
@@ -21,6 +18,7 @@ variable "custom_data" {
 variable "private_ip_address_allocation" {
      type = string
      description = "The allocation method used for the Private IP Address. Possible values are Dynamic and Static"
+     default = "Dynamic"
 }
 variable "resource_group_name" {
      type = string
@@ -57,11 +55,6 @@ variable "managed_disk_type" {
 variable "admin_password" {
      type = string
      description = "The password associated with the local administrator account."
-}
-
-variable "ip_name" {
-     type = string
-     description = "(optional) describe your variable"
 }
 
 variable "storage_image_version" {
