@@ -102,11 +102,11 @@ variable "provision_vm_agent" {
 }
 
 
-# variable "sql_connectivity_update_password" {
-#      type = string
-#      description = "Name of password"
-#      default = "Admin@1234"
-# }
+variable "disable_password_authentication" {
+     type = string
+     description = "Name of password"
+     default = "true"
+}
 
 variable "sql_connectivity_update_username" {
      type = string
