@@ -75,7 +75,7 @@ resource "azurerm_mssql_virtual_machine" "mssql_virtual_machine" {
   r_services_enabled               = true
   sql_connectivity_port            = 1433
   sql_connectivity_type            = "PRIVATE"
-  sql_connectivity_update_password = var.sql_connectivity_update_password
+  sql_connectivity_update_password = random_password.password2.result
   sql_connectivity_update_username = var.sql_connectivity_update_username
 }
 

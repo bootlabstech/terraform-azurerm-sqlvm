@@ -52,10 +52,10 @@ variable "managed_disk_type" {
      type = string
      description = "Specifies the type of managed disk to create. Possible values are either Standard_LRS, StandardSSD_LRS, Premium_LRS or UltraSSD_LRS."
 }
-variable "admin_password" {
-     type = string
-     description = "The password associated with the local administrator account."
-}
+# variable "admin_password" {
+#      type = string
+#      description = "The password associated with the local administrator account."
+# }
 
 variable "storage_image_version" {
   type        = string
@@ -102,16 +102,15 @@ variable "provision_vm_agent" {
 }
 
 
-variable "sql_connectivity_update_password" {
-     type = string
-     description = "Name of password"
-     default = "Admin@1234"
-}
+# variable "sql_connectivity_update_password" {
+#      type = string
+#      description = "Name of password"
+#      default = "Admin@1234"
+# }
 
 variable "sql_connectivity_update_username" {
      type = string
      description = "Username of sql"
-     default = "sqllogin"
 }
 variable "keyvault_name" {
      type = string
