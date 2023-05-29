@@ -1,3 +1,8 @@
+data "azurerm_key_vault" "key_vault" {
+  name  = var.keyvault_name
+  resource_group_name = var.resource_group_name
+}
+
 resource "azurerm_virtual_machine" "virtual_machine" {
   name                             = var.name
   location                         = var.location
@@ -25,7 +30,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   os_profile {
     computer_name  = var.name
     admin_username = var.admin_username
-    admin_password = var.admin_password
+    admin_password = random_password.password1.result
     # custom_data    = var.custom_data
   }
 
@@ -72,4 +77,40 @@ resource "azurerm_mssql_virtual_machine" "mssql_virtual_machine" {
   sql_connectivity_type            = "PRIVATE"
   sql_connectivity_update_password = var.sql_connectivity_update_password
   sql_connectivity_update_username = var.sql_connectivity_update_username
+}
+
+resource "random_password" "password1" {
+    length = 8
+    lower = true
+    min_lower = 1
+    min_numeric= 1
+    min_special= 1
+    min_upper= 1
+    numeric = true
+    override_special = "_"
+    special = true
+    upper = true
+    
+
+}
+resource "random_password" "password2" {
+    length = 8
+    lower = true
+    min_lower = 1
+    min_numeric= 1
+    min_special= 1
+    min_upper= 1
+    numeric = true
+    override_special = "_"
+    special = true
+    upper = true
+    
+
+}
+resource "azurerm_key_vault_secret" "sqlvm_password" {
+    name =  "${var.name}-sqlpwd"
+    value = random_password.password2.result
+    key_vault_id = data.azurerm_key_vault.key_vault.id
+    
+    depends_on = [ azurerm_mssql_virtual_machine.mssql_virtual_machine]
 }

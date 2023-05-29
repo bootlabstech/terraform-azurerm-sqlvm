@@ -113,3 +113,8 @@ variable "sql_connectivity_update_username" {
      description = "Username of sql"
      default = "sqllogin"
 }
+variable "keyvault_name" {
+     type = string
+     description = "keyvault name"
+
+}
