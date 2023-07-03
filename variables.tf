@@ -11,10 +11,10 @@ variable "admin_username" {
      type = string
      description = "Specifies the name of the local administrator account."
 }
-# variable "custom_data" {
-#      type = string
-#      description = "Specifies custom data to supply to the machine. On Linux-based systems, this can be used as a cloud-init script."
-# }
+variable "disk_size_gb" {
+     type = number
+     description = "Specifies custom data to supply to the machine. On Linux-based systems, this can be used as a cloud-init script."
+}
 variable "private_ip_address_allocation" {
      type = string
      description = "The allocation method used for the Private IP Address. Possible values are Dynamic and Static"
