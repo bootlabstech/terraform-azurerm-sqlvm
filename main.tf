@@ -9,7 +9,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [azurerm_network_interface.network_interface.id]
   vm_size                          = var.vm_size
-  disk_size_gb = var.disk_size_gb
+  
   delete_os_disk_on_termination    = var.delete_os_disk_on_termination
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
 
@@ -26,6 +26,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     create_option     = var.create_option
     managed_disk_type = var.managed_disk_type
     os_type           = var.os_type
+    disk_size_gb = var.disk_size_gb
   }
 
   os_profile {
