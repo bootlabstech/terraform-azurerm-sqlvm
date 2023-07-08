@@ -34,11 +34,13 @@ variable "delete_data_disks_on_termination" {
 variable "publisher" {
      type = string
      description = "Specifies the publisher of the image used to create the virtual machine"
+     default = "MicrosoftSQLServer"
 }
 
 variable "sku" {
      type = string
      description = "Specifies the SKU of the image used to create the virtual machine."
+     default = "Standard"
 }
 
 variable "offer" {
