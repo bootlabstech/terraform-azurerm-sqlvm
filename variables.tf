@@ -79,6 +79,7 @@ variable "disk_size_gb" {
 variable "admin_username" {
      type = string
      description = "Specifies the name of the local administrator account."
+     default = "user01"
 }
 variable "disable_password_authentication" {
      type = string
