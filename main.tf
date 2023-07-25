@@ -109,3 +109,34 @@ resource "azurerm_key_vault_secret" "sqlvm_password" {
     
     depends_on = [ azurerm_mssql_virtual_machine.mssql_virtual_machine]
 }
+
+# Creates Network Security Group NSG for Virtual Machine
+resource "azurerm_network_security_group" "nsg" {
+  name                = "${var.name}-nsg"
+  location            = azurerm_windows_virtual_machine.example.location
+  resource_group_name = azurerm_windows_virtual_machine.example.resource_group_name
+}
+
+
+# Creates Network Security Group Default Rules for Virtual Machine
+resource "azurerm_network_security_rule" "nsg_rules" {
+  for_each                    = var.nsg_rules
+  name                        = each.value.name
+  priority                    = each.value.priority
+  direction                   = each.value.direction
+  access                      = each.value.access
+  protocol                    = each.value.protocol
+  source_address_prefix       = each.value.source_address_prefix
+  source_port_range           = each.value.source_port_range
+  destination_address_prefix  = each.value.destination_address_prefix
+  destination_port_range      = each.value.destination_port_range
+  network_security_group_name = azurerm_network_security_group.nsg.name
+  resource_group_name         = azurerm_windows_virtual_machine.example.resource_group_name
+}
+
+
+# Creates association (i.e) adds NSG to the NIC
+resource "azurerm_network_interface_security_group_association" "security_group_association" {
+  network_interface_id      = azurerm_network_interface.network_interface.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}

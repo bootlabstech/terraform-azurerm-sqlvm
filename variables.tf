@@ -136,3 +136,30 @@ variable "sql_connectivity_type" {
      default = "PRIVATE"
 
 }
+# azurerm_network_security_rule
+variable "nsg_rules" {
+  type = map(object({
+    name                       = string
+    priority                   = number
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_address_prefix      = string
+    source_port_range          = string
+    destination_address_prefix = string
+    destination_port_range     = string
+  }))
+  default = {
+    "https" = {
+      access                     = "Allow"
+      destination_address_prefix = "*"
+      destination_port_range     = "443"
+      direction                  = "Inbound"
+      name                       = "allow-https"
+      priority                   = 100
+      protocol                   = "Tcp"
+      source_address_prefix      = "*"
+      source_port_range          = "*"
+    }
+  }
+}
