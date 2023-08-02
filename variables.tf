@@ -29,7 +29,7 @@ variable "delete_os_disk_on_termination" {
 variable "delete_data_disks_on_termination" {
   type        = bool
   description = "Should the Data Disks (either the Managed Disks / VHD Blobs) be deleted when the Virtual Machine is destroyed? Defaults to false."
-  default     = true
+  default     = false
 }
 variable "publisher" {
      type = string
@@ -72,7 +72,26 @@ variable "managed_disk_type" {
      type = string
      description = " Specifies the type of managed disk to create. Possible values are either Standard_LRS, StandardSSD_LRS, Premium_LRS or UltraSSD_LRS."
 }
+variable "storage_workload_type" {
+     type = string
+     description = " Specifies the type of managed disk to create. Possible values are either Standard_LRS, StandardSSD_LRS, Premium_LRS or UltraSSD_LRS."
+     default = "GENERAL"
+}
+variable "default_file_path" {
+     type = string
+     description = " Specifies the type of managed disk to create. Possible values are either Standard_LRS, StandardSSD_LRS, Premium_LRS or UltraSSD_LRS."
+     default =  "F:/data"
+}
+variable "lun" {
+     type = number
+     description = " Specifies the size of the data disk in gigabytes."
+     default = 0
+}
 variable "disk_size_gb" {
+     type = number
+     description = " Specifies the size of the data disk in gigabytes."
+}
+variable "data_disk_size_gb" {
      type = number
      description = " Specifies the size of the data disk in gigabytes."
 }
@@ -162,4 +181,15 @@ variable "nsg_rules" {
       source_port_range          = "*"
     }
   }
+
+}
+
+# azurerm_recovery_services_vault
+variable "recovery_services_vault_name" {
+  type        = string
+  description = "name of the recover service vault"
+}
+variable "services_vault_resource_group_name" {
+  type        = string
+  description = "name of resource group where the recovery service vault reside in"
 }
