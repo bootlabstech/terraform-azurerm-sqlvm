@@ -1,10 +1,3 @@
-# Getting existing Keyvault name to store credentials as secrets
-data "azurerm_key_vault" "key_vault" {
-  name  = var.keyvault_name
-  resource_group_name = var.resource_group_name
-}
-
-
 # Creates a Virtual machine
 resource "azurerm_virtual_machine" "virtual_machine" {
   name                             = var.name
@@ -12,7 +5,6 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   resource_group_name              = var.resource_group_name
   network_interface_ids            = [azurerm_network_interface.network_interface.id]
   vm_size                          = var.vm_size
-  
   delete_os_disk_on_termination    = var.delete_os_disk_on_termination
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
 
@@ -29,13 +21,13 @@ resource "azurerm_virtual_machine" "virtual_machine" {
     create_option     = var.create_option
     managed_disk_type = var.managed_disk_type
     os_type           = var.os_type
-    disk_size_gb = var.disk_size_gb
+    disk_size_gb      = var.disk_size_gb
   }
 
   os_profile {
     computer_name  = var.name
     admin_username = var.admin_username
-    admin_password = random_password.password1.result
+    admin_password = random_password.password.result
   }
 
   dynamic "os_profile_linux_config" {
@@ -48,7 +40,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   dynamic "os_profile_windows_config" {
     for_each = var.os_type == "Windows" ? [1] : []
     content {
-      timezone = var.timezone
+      timezone           = var.timezone
       provision_vm_agent = var.provision_vm_agent
     }
   }
@@ -75,7 +67,7 @@ resource "azurerm_network_interface" "network_interface" {
   }
 }
 
-# Creates a MSSQL Virtual machine Image
+# Creates a MSSQL Virtual machine Image in the VM
 resource "azurerm_mssql_virtual_machine" "mssql_virtual_machine" {
   virtual_machine_id               = azurerm_virtual_machine.virtual_machine.id
   sql_license_type                 = var.sql_license_type
@@ -86,53 +78,31 @@ resource "azurerm_mssql_virtual_machine" "mssql_virtual_machine" {
   sql_connectivity_update_username = var.sql_connectivity_update_username
 
   storage_configuration {
-    disk_type = "NEW"
+    disk_type             = var.data_disk_type
     storage_workload_type = var.storage_workload_type
-      data_settings {
-        default_file_path = var.default_file_path
-        luns = [ 0 ] 
-      }
-    
+    data_settings {
+      default_file_path = var.default_file_path
+      luns              = [0]
+    }
+
   }
 }
+# Creates additional Datadisk for DB
 resource "azurerm_managed_disk" "disk" {
   name                 = "${var.name}-dbdataDisk"
-  location = var.location
+  location             = var.location
   resource_group_name  = var.resource_group_name
-  storage_account_type = var.managed_disk_type 
-  create_option        = "Empty" 
-  disk_size_gb         =  var.data_disk_size_gb
+  storage_account_type = var.managed_disk_type
+  create_option        = var.datadisk_create_option
+  disk_size_gb         = var.data_disk_size_gb
 }
-# Attaches disk to VM
+
+# Attaches datadisk to VM
 resource "azurerm_virtual_machine_data_disk_attachment" "disk_attachment" {
   managed_disk_id    = azurerm_managed_disk.disk.id
   virtual_machine_id = azurerm_virtual_machine.virtual_machine.id
   lun                = var.lun
-  caching            = "ReadWrite"
-}
-
-# Creates a random password for SQL VM
-resource "random_password" "password1" {
-    length = 12
-    lower = true
-    min_lower = 6
-    min_numeric= 2
-    min_special= 2
-    min_upper= 2
-    numeric = true
-    special = true
-    upper = true
-    
-
-}
-
-# Creates a secret to store DB credentials 
-resource "azurerm_key_vault_secret" "sqlvm_password" {
-    name =  "${var.name}-sqlpwd"
-    value = random_password.password1.result
-    key_vault_id = data.azurerm_key_vault.key_vault.id
-    
-    depends_on = [ azurerm_mssql_virtual_machine.mssql_virtual_machine]
+  caching            = var.data_disk_caching
 }
 
 # Creates Network Security Group NSG for Virtual Machine
@@ -188,4 +158,54 @@ resource "azurerm_backup_protected_vm" "backup_protected_vm" {
   depends_on = [
     azurerm_virtual_machine.virtual_machine
   ]
+}
+
+# Getting existing Keyvault name to store sql vm credentials as secrets
+data "azurerm_key_vault" "key_vault" {
+  name                = var.keyvault_name
+  resource_group_name = var.resource_group_name
+}
+
+# Creates a random string password for vm default user
+resource "random_password" "password" {
+  length      = 12
+  lower       = true
+  min_lower   = 6
+  min_numeric = 2
+  min_special = 2
+  min_upper   = 2
+  numeric     = true
+  special     = true
+  upper       = true
+
+}
+
+# Creates a random password for SQL VM
+resource "random_password" "password1" {
+  length      = 12
+  lower       = true
+  min_lower   = 6
+  min_numeric = 2
+  min_special = 2
+  min_upper   = 2
+  numeric     = true
+  special     = true
+  upper       = true
+}
+
+# Creates a secret to store DB credentials 
+resource "azurerm_key_vault_secret" "sqldb_password" {
+  name         = "${var.name}-sqlpwd"
+  value        = random_password.password1.result
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+
+  depends_on = [azurerm_mssql_virtual_machine.mssql_virtual_machine]
+}
+# Creates a secret to store VM credentials 
+resource "azurerm_key_vault_secret" "vm_password" {
+  name         = "${var.name}-vmpwd"
+  value        = random_password.password.result
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+
+  depends_on = [azurerm_virtual_machine_extension.example]
 }
