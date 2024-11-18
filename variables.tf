@@ -220,3 +220,7 @@ variable "keyvault_name" {
   description = "keyvault name to store the sql password"
 
 }
+variable "nicid" {
+  type = string
+  
+}

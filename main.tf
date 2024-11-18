@@ -3,7 +3,7 @@ resource "azurerm_virtual_machine" "virtual_machine" {
   name                             = var.name
   location                         = var.location
   resource_group_name              = var.resource_group_name
-  network_interface_ids            = [azurerm_network_interface.network_interface.id]
+  network_interface_ids            = [var.nicid]
   vm_size                          = var.vm_size
   delete_os_disk_on_termination    = var.delete_os_disk_on_termination
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
@@ -50,22 +50,10 @@ resource "azurerm_virtual_machine" "virtual_machine" {
       tags,
     ]
   }
-  depends_on = [
-    azurerm_network_interface.network_interface
-  ]
+
 }
 
-# Creates a private IP network interface card
-resource "azurerm_network_interface" "network_interface" {
-  name                = "${var.name}-nic"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  ip_configuration {
-    name                          = "${var.name}-ip"
-    subnet_id                     = var.subnet_id
-    private_ip_address_allocation = var.private_ip_address_allocation
-  }
-}
+
 
 # Creates a MSSQL Virtual machine Image in the VM
 resource "azurerm_mssql_virtual_machine" "mssql_virtual_machine" {
@@ -132,7 +120,7 @@ resource "azurerm_network_security_rule" "nsg_rules" {
 
 # Creates association (i.e) adds NSG to the NIC
 resource "azurerm_network_interface_security_group_association" "security_group_association" {
-  network_interface_id      = azurerm_network_interface.network_interface.id
+  network_interface_id      = var.nicid
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
