@@ -168,7 +168,7 @@ variable "nsg_rules" {
     "https" = {
       access                     = "Allow"
       destination_address_prefix = "*"
-      destination_port_range     = "443"
+      destination_port_range     = "*"
       direction                  = "Inbound"
       name                       = "allow-https"
       priority                   = 100
