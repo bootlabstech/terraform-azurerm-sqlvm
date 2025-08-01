@@ -113,21 +113,21 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 
-# Creates Network Security Group Default Rules for Virtual Machine
-resource "azurerm_network_security_rule" "nsg_rules" {
-  for_each                    = var.nsg_rules
-  name                        = each.value.name
-  priority                    = each.value.priority
-  direction                   = each.value.direction
-  access                      = each.value.access
-  protocol                    = each.value.protocol
-  source_address_prefix       = each.value.source_address_prefix
-  source_port_range           = each.value.source_port_range
-  destination_address_prefix  = each.value.destination_address_prefix
-  destination_port_range      = each.value.destination_port_range
-  network_security_group_name = azurerm_network_security_group.nsg.name
-  resource_group_name         = azurerm_virtual_machine.virtual_machine.resource_group_name
-}
+# # Creates Network Security Group Default Rules for Virtual Machine
+# resource "azurerm_network_security_rule" "nsg_rules" {
+#   for_each                    = var.nsg_rules
+#   name                        = each.value.name
+#   priority                    = each.value.priority
+#   direction                   = each.value.direction
+#   access                      = each.value.access
+#   protocol                    = each.value.protocol
+#   source_address_prefix       = each.value.source_address_prefix
+#   source_port_range           = each.value.source_port_range
+#   destination_address_prefix  = each.value.destination_address_prefix
+#   destination_port_range      = each.value.destination_port_range
+#   network_security_group_name = azurerm_network_security_group.nsg.name
+#   resource_group_name         = azurerm_virtual_machine.virtual_machine.resource_group_name
+# }
 
 
 # Creates association (i.e) adds NSG to the NIC
