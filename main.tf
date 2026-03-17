@@ -95,6 +95,9 @@ resource "azurerm_managed_disk" "disk" {
   storage_account_type = var.managed_disk_type
   create_option        = var.datadisk_create_option
   disk_size_gb         = var.data_disk_size_gb
+  disk_access_id = var.disk_access_id
+  network_access_policy = var.network_access_policy
+  public_network_access_enabled = var.public_network_access_enabled
 }
 
 # Attaches datadisk to VM
