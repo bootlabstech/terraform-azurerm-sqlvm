@@ -98,6 +98,8 @@ resource "azurerm_managed_disk" "disk" {
   disk_access_id = var.disk_access_id
   network_access_policy = var.network_access_policy
   public_network_access_enabled = var.public_network_access_enabled
+
+
 }
 
 # Attaches datadisk to VM
